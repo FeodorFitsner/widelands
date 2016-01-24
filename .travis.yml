@@ -8,37 +8,23 @@ before_script:
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "QFKfKCTDzhIpO12glYXbC285SPOTxBmdsi0UzsQJ6t1T43Z6n6eLVT4XnB90H4h4ri+sKyF2Qc0T/mshvPS/U74SENTb8Hz8w2NOQOpIII+YDGPGABidupnJtgsjOk36n+id8ZxIym40/uoZEOUYCkdQM2AZex1sNKTwlGPr7X8="
+   
 matrix:
   include:
-     - compiler: clang
-       env: CLANG_VERSION="3.4" BUILD_TYPE="Debug"
-     - compiler: clang
-       env: CLANG_VERSION="3.5" BUILD_TYPE="Debug"
-     - compiler: clang
-       env: CLANG_VERSION="3.6" BUILD_TYPE="Debug"
-     - compiler: clang
-       env: CLANG_VERSION="3.7" BUILD_TYPE="Debug"
-     - compiler: clang
-       env: CLANG_VERSION="3.4" BUILD_TYPE="Release"
-     - compiler: clang
-       env: CLANG_VERSION="3.5" BUILD_TYPE="Release"
-     - compiler: clang
-       env: CLANG_VERSION="3.6" BUILD_TYPE="Release"
-     - compiler: clang
-       env: CLANG_VERSION="3.7" BUILD_TYPE="Release"
-     - compiler: gcc
-       env: GCC_VERSION="4.7" BUILD_TYPE="Debug"
-     - compiler: gcc
-       env: GCC_VERSION="4.8" BUILD_TYPE="Debug"
-     - compiler: gcc
-       env: GCC_VERSION="4.9" BUILD_TYPE="Debug"
-     - compiler: gcc
-       env: GCC_VERSION="5" BUILD_TYPE="Debug"
-     - compiler: gcc
-       env: GCC_VERSION="4.7" BUILD_TYPE="Release"
-     - compiler: gcc
-       env: GCC_VERSION="4.8" BUILD_TYPE="Release"
-     - compiler: gcc
-       env: GCC_VERSION="4.9" BUILD_TYPE="Release"
      - compiler: gcc
        env: GCC_VERSION="5" BUILD_TYPE="Release"
+
+addons:
+  coverity_scan:
+    project:
+      name: "widelands/widelands"
+      description: "Build submitted via Travis CI"
+    notification_email: mail@example.com
+    build_command_prepend: "mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE:STRING=\"$BUILD_TYPE\""
+    build_command: "make -k -j1"
+    branch_pattern: coverity_scan

@@ -36,25 +36,3 @@ until sudo apt-get install -qq \
    libsdl2-net-dev \
    libsdl2-ttf-dev \
 ; do sleep 10; done
-
-# Configure the build
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE:STRING="$BUILD_TYPE"
-
-# Any codecheck warning is an error in Debug builds. Keep the codebase clean!!
-if [ "$BUILD_TYPE" == "Debug" ]; then
-   # Suppress color output.
-   TERM=dumb make -j1 codecheck 2>&1 | tee codecheck.out
-   if grep '^[/_.a-zA-Z]\+:[0-9]\+:' codecheck.out; then 
-      echo "You have codecheck warnings (see above) Please fix."
-      exit 1 # CodeCheck warnings.
-   fi
-fi
-
-# Do the actual build.
-make -k -j1
-
-# Run the regression suite.
-cd ..
-./regression_test.py -b build/src/widelands

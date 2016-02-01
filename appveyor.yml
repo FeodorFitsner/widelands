@@ -23,10 +23,10 @@ build:
 
 build_script:
   - cmd: cd c:\projects
-  - cmd: md build
-  - cmd: cd build
+  - cmd: md build_%CONFIGURATION%
+  - cmd: cd build_%CONFIGURATION%
   - cmd: echo %APPVEYOR_BUILD_VERSION% > c:\projects\widelands\WL_RELEASE
-  - cmd: cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release ..\widelands
+  - cmd: cmake -G "Ninja" -DCMAKE_BUILD_TYPE=%CONFIGURATION% ..\widelands
   - cmd: ninja
   - cmd: strip -sv src\widelands.exe
   - cmd: ISCC /q /fWidelands-%APPVEYOR_BUILD_VERSION%-win64 ..\widelands\utils\win32\innosetup\Widelands.iss
@@ -38,3 +38,10 @@ artifacts:
 
 platform: 
   - x64
+
+configuration:
+  - Debug
+  - Release
+
+matrix:
+  fast_finish: true

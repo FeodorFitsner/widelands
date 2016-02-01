@@ -1,16 +1,18 @@
+init:
+  - cmd: "IF \"%PLATFORM%\" == \"x86\" (set MINGWPATH=C:\\msys64\\mingw32\\bin & set MINGWSUFFIX=i686) ELSE (set MINGWPATH=C:\\msys64\\mingw64\\bin & set MINGWSUFFIX=x86_64)" 
+
 install:
   # Installing various utilities
   - choco install -y InnoSetup
-  - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;"C:\Program Files (x86)\Inno Setup 5";%PATH%
-  # Switch from SF to msys2.org (default, much faster)
-  - cmd:  "bash --login -c \"pacman --noconfirm --sync pacman-mirrors\""
-  # Update complete msys2 distribution
-  # fails most of the time due slow data transfer
+  - set PATH=%MINGWPATH%;C:\msys64\usr\bin;"C:\Program Files (x86)\Inno Setup 5";%PATH%
+  # Update mirrors
+  - cmd: "bash --login -c \"pacman --noconfirm --sync pacman-mirrors\""
+  # Update msys2 core
   - cmd: "bash --login -c \"update-core\""
+  # Update msys2 system
   - cmd: "bash --login -c \"pacman -Su --noconfirm\""
-  - cmd: "bash --login -c \"pacman --noconfirm -S mingw-w64-x86_64-boost mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf mingw-w64-x86_64-SDL2_mixer mingw-w64-x86_64-SDL2_image mingw-w64-x86_64-glew\""
-  # Hack, there are wrong dependencies atm in the msys2 packages (SDL_image, libwebp)  
-  #- cmd: copy c:\msys64\mingw64\bin\libwebp-6.dll c:\msys64\mingw64\bin\libwebp-5.dll
+  # Installed required libs
+  - cmd: "bash --login -c \"pacman --noconfirm -S mingw-w64-%MINGWSUFFIX%-boost mingw-w64-%MINGWSUFFIX%-SDL2_net mingw-w64-%MINGWSUFFIX%-SDL2_ttf mingw-w64-%MINGWSUFFIX%-SDL2_mixer mingw-w64-%MINGWSUFFIX%-SDL2_image mingw-w64-%MINGWSUFFIX%-glew\""
 
 shallow_clone: true
 
@@ -22,24 +24,25 @@ build:
   verbosity: detailed
 
 build_script:
-  - cmd: cd c:\projects
-  - cmd: md build_%CONFIGURATION%
-  - cmd: cd build_%CONFIGURATION%
-  - cmd: echo %APPVEYOR_BUILD_VERSION% > c:\projects\widelands\WL_RELEASE
-  - cmd: cmake -G "Ninja" -DCMAKE_BUILD_TYPE=%CONFIGURATION% ..\widelands
+  - cmd: cd APPVEYOR_BUILD_FOLDER\..
+  - cmd: md build_%CONFIGURATION%_%PLATFORM%
+  - cmd: cd build_%CONFIGURATION%_%PLATFORM%
+  - cmd: echo %APPVEYOR_BUILD_VERSION%_%CONFIGURATION%_%PLATFORM% > %APPVEYOR_BUILD_FOLDER%\WL_RELEASE
+  - cmd: cmake -G "Ninja" -DCMAKE_BUILD_TYPE=%CONFIGURATION% APPVEYOR_BUILD_FOLDER
   - cmd: ninja
 
 on_success:
-  - cmd: strip -sv c:\projects\build_%CONFIGURATION%\src\widelands.exe
-  - cmd: ISCC /q /fWidelands-%APPVEYOR_BUILD_VERSION%-win64 c:\projects\widelands\utils\win32\innosetup\Widelands.iss
-  - appveyor PushArtifact c:\projects\Widelands-%APPVEYOR_BUILD_VERSION%-%CONFIGURATION%-win64.exe
+  - cmd: strip -sv c:\projects\build_%CONFIGURATION%_%PLATFORM%\src\widelands.exe
+  - cmd: ISCC /q /fWidelands-%APPVEYOR_BUILD_VERSION%-%PLATFORM% c:\projects\widelands\utils\win32\innosetup\Widelands.iss
+  - appveyor PushArtifact c:\projects\Widelands-%APPVEYOR_BUILD_VERSION%-%CONFIGURATION%-%PLATFORM%.exe
   
 artifacts:
-  - path: Widelands-$(APPVEYOR_BUILD_VERSION)-$(CONFIGURATION)-win64.exe
+  - path: Widelands-$(APPVEYOR_BUILD_VERSION)-$(CONFIGURATION)-$(PLATFORM).exe
     name: Widelands Setup
 
 platform: 
   - x64
+  - x86
 
 configuration:
   - Debug

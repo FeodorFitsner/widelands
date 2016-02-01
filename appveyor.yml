@@ -20,9 +20,6 @@ branches:
   except:
     - _widelands_dev_widelands_trunk
 
-build: 
-  verbosity: detailed
-
 build_script:
   - cmd: cd APPVEYOR_BUILD_FOLDER\..
   - cmd: md build_%CONFIGURATION%_%PLATFORM%

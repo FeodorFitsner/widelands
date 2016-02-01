@@ -28,12 +28,14 @@ build_script:
   - cmd: echo %APPVEYOR_BUILD_VERSION% > c:\projects\widelands\WL_RELEASE
   - cmd: cmake -G "Ninja" -DCMAKE_BUILD_TYPE=%CONFIGURATION% ..\widelands
   - cmd: ninja
-  - cmd: strip -sv src\widelands.exe
-  - cmd: ISCC /q /fWidelands-%APPVEYOR_BUILD_VERSION%-win64 ..\widelands\utils\win32\innosetup\Widelands.iss
-  - appveyor PushArtifact c:\projects\Widelands-%APPVEYOR_BUILD_VERSION%-win64.exe
 
+on_success:
+  - cmd: strip -sv c:\projects\build_%CONFIGURATION%\src\widelands.exe
+  - cmd: ISCC /q /fWidelands-%APPVEYOR_BUILD_VERSION%-win64 c:\projects\widelands\utils\win32\innosetup\Widelands.iss
+  - appveyor PushArtifact c:\projects\Widelands-%APPVEYOR_BUILD_VERSION%-%CONFIGURATION%-win64.exe
+  
 artifacts:
-  - path: Widelands-$(APPVEYOR_BUILD_VERSION)-win64.exe
+  - path: Widelands-$(APPVEYOR_BUILD_VERSION)-$(CONFIGURATION)-win64.exe
     name: Widelands Setup
 
 platform: 

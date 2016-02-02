@@ -23,15 +23,15 @@ branches:
     - _widelands_dev_widelands_trunk
 
 build_script:
-  - cmd: cd APPVEYOR_BUILD_FOLDER\..
-  - cmd: md build_%CONFIGURATION%_%PLATFORM%
-  - cmd: cd build_%CONFIGURATION%_%PLATFORM%
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%
+  - cmd: md build
+  - cmd: cd build
   - cmd: echo %APPVEYOR_BUILD_VERSION%_%CONFIGURATION%_%PLATFORM% > %APPVEYOR_BUILD_FOLDER%\WL_RELEASE
   - cmd: "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON %APPVEYOR_BUILD_FOLDER%"
   - cmd: ninja
 
 on_success:
-  - cmd: strip -sv c:\projects\build_%CONFIGURATION%_%PLATFORM%\src\widelands.exe
+  - cmd: strip -sv %APPVEYOR_BUILD_FOLDER%\build\src\widelands.exe
   - cmd: ISCC /q /fWidelands-%APPVEYOR_BUILD_VERSION%-%PLATFORM% c:\projects\widelands\utils\win32\innosetup\Widelands.iss
   - appveyor PushArtifact c:\projects\Widelands-%APPVEYOR_BUILD_VERSION%-%CONFIGURATION%-%PLATFORM%.exe
   

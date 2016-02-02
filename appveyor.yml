@@ -8,6 +8,8 @@ install:
   - choco install -y InnoSetup
   - cmd: "set PATH=%MINGWPATH%;C:\\msys64\\usr\\bin;C:\\Program Files (x86)\\Inno Setup 5;%PATH%"
   - cmd: "echo %PATH%"
+  - cmd: "ninja -v"
+  - cmd: "dir %MINGWPATH%"
   # Update mirrors
   - cmd: "bash --login -c \"pacman --noconfirm --sync pacman-mirrors\""
   # Update msys2 core

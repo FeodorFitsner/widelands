@@ -1,10 +1,12 @@
 init:
   - cmd: "IF \"%PLATFORM%\" == \"x86\" (set MINGWPATH=\"C:\\msys64\\mingw32\\bin\" & set MINGWSUFFIX=i686) ELSE (set MINGWPATH=\"C:\\msys64\\mingw64\\bin\" & set MINGWSUFFIX=x86_64)" 
+  - cmd: "echo %MINGWPATH%"
+  - cmd: "echo %MINGWSUFFIX%"
 
 install:
   # Installing various utilities
   - choco install -y InnoSetup
-  - set PATH=%MINGWPATH%;C:\msys64\usr\bin;"C:\Program Files (x86)\Inno Setup 5";%PATH%
+  - cmd: "set PATH=%MINGWPATH%;C:\\msys64\\usr\\bin;\"C:\\Program Files (x86)\\Inno Setup 5\";%PATH%"
   - cmd: "echo %PATH%"
   # Update mirrors
   - cmd: "bash --login -c \"pacman --noconfirm --sync pacman-mirrors\""

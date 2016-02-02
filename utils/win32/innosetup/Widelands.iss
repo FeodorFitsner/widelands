@@ -108,7 +108,9 @@ Source: {#DLLFolder}\libglbinding.dll;                        DestDir: {app};   
 Source: {#DLLFolder}\libicuuc56.dll;                    DestDir: {app};            Flags: ignoreversion;                                                       Components: "Widelands"
 Source: {#DLLFolder}\libbz2-1.dll;                      DestDir: {app};            Flags: ignoreversion;                                                       Components: "Widelands"
 Source: {#DLLFolder}\libfreetype-6.dll;                 DestDir: {app};            Flags: ignoreversion;                                                       Components: "Widelands"
+#if GetEnv("PLATFORM") == "x64"
 Source: {#DLLFolder}\libgcc_s_seh-1.dll;                DestDir: {app};            Flags: ignoreversion;                                                       Components: "Widelands"
+#endif
 Source: {#DLLFolder}\libglib-2.0-0.dll;                 DestDir: {app};            Flags: ignoreversion;                                                       Components: "Widelands"
 Source: {#DLLFolder}\libharfbuzz-0.dll;                 DestDir: {app};            Flags: ignoreversion;                                                       Components: "Widelands"
 Source: {#DLLFolder}\libicudt56.dll;                    DestDir: {app};            Flags: ignoreversion;                                                       Components: "Widelands"

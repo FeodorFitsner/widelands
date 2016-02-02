@@ -8,8 +8,7 @@ install:
   - choco install -y InnoSetup
   - cmd: "set PATH=%MINGWPATH%;C:\\msys64\\usr\\bin;C:\\Program Files (x86)\\Inno Setup 5;%PATH%"
   - cmd: "echo %PATH%"
-  - cmd: "ninja -v"
-  - cmd: "dir %MINGWPATH%"
+  - cmd: "cmake --help"
   # Update mirrors
   - cmd: "bash --login -c \"pacman --noconfirm --sync pacman-mirrors\""
   # Update msys2 core
@@ -30,7 +29,7 @@ build_script:
   - cmd: md build_%CONFIGURATION%_%PLATFORM%
   - cmd: cd build_%CONFIGURATION%_%PLATFORM%
   - cmd: echo %APPVEYOR_BUILD_VERSION%_%CONFIGURATION%_%PLATFORM% > %APPVEYOR_BUILD_FOLDER%\WL_RELEASE
-  - cmd: cmake -G "Ninja" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON %APPVEYOR_BUILD_FOLDER%
+  - cmd: "cmake -G \"Ninja\" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPTION_USE_GLBINDING=ON %APPVEYOR_BUILD_FOLDER%"
   - cmd: ninja
 
 on_success:
